@@ -44,7 +44,7 @@ Criar um **pipeline unificado** com foco em:
 
 ### Pipeline principal
 
-
+```
 INPUT (pdf, mobi, cbz, epub)
 ↓
 [Conversão externa]
@@ -56,6 +56,7 @@ INPUT (pdf, mobi, cbz, epub)
 [Organização em estrutura de pasta padrão]
 ↓
 OUTPUT (EPUB Kindle-ready)
+```
 
 ### 📂 Estrutura o projeto
 
