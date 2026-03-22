@@ -57,7 +57,36 @@ INPUT (pdf, mobi, cbz, epub)
 ↓
 OUTPUT (EPUB Kindle-ready)
 
+### 📂 Estrutura o projeto
 
+```
+ebook-editor/
+│
+├── app/
+│   ├── cli.py
+│   ├── pipeline.py
+│
+├── services/
+│   ├── conversion.py
+│   ├── normalizer.py
+│   ├── metadata.py
+│   ├── library.py
+│
+├── integrations/
+│   ├── calibre.py
+│   ├── kcc.py
+│
+├── domain/
+│   ├── models.py
+│
+├── utils/
+│   ├── file_utils.py
+│
+├── tests/
+│
+└── pyproject.toml
+
+```
 ---
 
 ## 📦 Escopo do MVP

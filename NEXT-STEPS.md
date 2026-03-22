@@ -1,12 +1,12 @@
 # 📌 Próximos Passos
 
-1. Definir stack final (Python + Tauri)
-2. Criar CLI simples do pipeline
-3. Implementar editor de metadados
-4. Integrar Calibre CLI
-5. Integrar KCC
-6. Criar UI básica
-7. Implementar normalizador EPUB
+- [x] Definir stack final (Python + Tauri)
+- [ ] Criar CLI simples do pipeline
+- [ ] Implementar editor de metadados
+- [ ] Integrar Calibre CLI
+- [ ] Integrar KCC
+- [ ] Criar UI básica
+- [ ] Implementar normalizador EPUB
 
 ---
 
