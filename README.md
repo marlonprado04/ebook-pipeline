@@ -45,17 +45,29 @@ Criar um **pipeline unificado** com foco em:
 ### Pipeline principal
 
 ```
-INPUT (pdf, mobi, cbz, epub)
+INPUT
 ↓
-[Conversão externa]
+[Detector de tipo]
+↓
+[Conversão]
+  - Calibre (pdf, mobi)
+  - KCC (cbz)
 ↓
 [Normalização EPUB]
+  - estrutura
+  - CSS
+  - imagens
 ↓
-[Editor de metadados]
+[Metadata Editor]
+  - título, autor, série
+  - capa
 ↓
-[Organização em estrutura de pasta padrão]
+[Polish opcional]
+  - ebook-polish (Calibre)
 ↓
-OUTPUT (EPUB Kindle-ready)
+[Library Manager]
+↓
+OUTPUT (Kindle-ready)
 ```
 
 ### 📂 Estrutura o projeto
