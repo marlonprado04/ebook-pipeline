@@ -1,0 +1,5 @@
+# Arquivos pesados da pasta integrations
+*.txz
+*tar.gz
+
+/integrations/*
