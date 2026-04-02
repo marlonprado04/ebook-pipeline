@@ -2,4 +2,12 @@
 *.txz
 *tar.gz
 
-/integrations/*
+# Arquivos da pasta de integração do calibre e kcc
+
+integrations/calibre/*
+integrations/kcc/*
+
+# Mantém arquivos gitkeep pra manter estrutura de pastas de integração
+
+!integrations/calibre/.gitkeep
+!integrations/kcc/.gitkeep
