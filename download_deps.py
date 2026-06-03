@@ -47,13 +47,19 @@ def configurar_calibre_windows():
 
 def main():
     if sys.platform != "win32":
-        print("❌ Este script foi adaptado especificamente para o seu ambiente Windows nativo.")
+        print("❌ Este script foi adaptado para Windows.")
         return
 
-    print("🚀 Iniciando o download das dependências do projeto...")
+    print("🚀 Iniciando o download...")
     criar_pastas()
     configurar_calibre_windows()
-    print("\n🎉 Tudo pronto! Dependências configuradas para o ambiente Windows.")
-
-if __name__ == "__main__":
-    main()
+    
+    # Validação pós-download:
+    exe_final = BASE_DIR / "app" / "integrations" / "calibre" / "bin" / "calibre" / "ebook-convert.exe"
+    # Nota: Ajuste o caminho acima conforme a estrutura que o MSI criar no seu teste
+    
+    if exe_final.exists():
+        print(f"\n🎉 Sucesso! Calibre pronto em: {exe_final}")
+    else:
+        print("\n⚠️ O download terminou, mas o 'ebook-convert.exe' não foi encontrado no caminho esperado.")
+        print("Verifique a pasta 'app/integrations/calibre/bin/' e ajuste o adapter.py.")

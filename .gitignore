@@ -12,18 +12,22 @@ ENV/
 Thumbs.db
 
 # --- ESPECÍFICO DO PROJETO (INTEGRAÇÕES) ---
-# Ignorar instaladores temporários do Windows
 *.msi
+*.exe
+*.log
 
-# Ignorar os binários pesados (Calibre e KCC)
-# O Git vai trackear o 'adapter.py', mas vai ignorar os gigabytes de arquivos dentro de 'bin'
+# Binários pesados (Calibre e KCC)
 app/integrations/calibre/bin/
 app/integrations/kcc/bin/
 
 # --- ARQUIVOS DE TESTE ---
-# Ignorar livros e mangás que você usar para testar localmente na raiz
+# Ignorar arquivos de mídia de teste na raiz ou subpastas
 *.pdf
 *.epub
 *.mobi
 *.cbz
 *.zip
+
+# Caso utilize um banco de dados local no futuro
+*.db
+*.sqlite
