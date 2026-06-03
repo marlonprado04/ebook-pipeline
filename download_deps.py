@@ -1,65 +1,92 @@
-# download_deps.py
-import os
 import sys
+import os
 import urllib.request
-import subprocess
+import tarfile
+import shutil
 from pathlib import Path
 
-# Configura as pastas de destino
-BASE_DIR = Path(__file__).parent.resolve()
-CALIBRE_BIN_DIR = BASE_DIR / "app" / "integrations" / "calibre" / "bin"
-KCC_BIN_DIR = BASE_DIR / "app" / "integrations" / "kcc" / "bin"
+# Links oficiais e estáveis
+KCC_URL = "https://github.com/ciromattia/kcc/archive/refs/tags/v9.6.2.tar.gz"
+CALIBRE_URL = "https://download.calibre-ebook.com/9.5.0/calibre-9.5.0-x86_64.txz"
 
-def criar_pastas():
-    CALIBRE_BIN_DIR.mkdir(parents=True, exist_ok=True)
-    KCC_BIN_DIR.mkdir(parents=True, exist_ok=True)
-
-def baixar_arquivo(url, destino):
-    print(f"📦 Baixando {url}...")
-    urllib.request.urlretrieve(url, destino)
-    print("✅ Download concluído!")
-
-def configurar_calibre_windows():
-    # Usaremos uma versão estável do Calibre de 64 bits para Windows (.msi)
-    url_calibre = "https://download.calibre-ebook.com/7.25.0/calibre-64bit-7.25.0.msi"
-    msi_path = BASE_DIR / "calibre_installer.msi"
+def download_arquivo(url, destino):
+    """Baixa um arquivo simulando um navegador legítimo."""
+    print(f"📥 Baixando {url}...")
     
-    baixar_arquivo(url_calibre, msi_path)
-    
-    print(f"📂 Extraindo arquivos do Calibre para {CALIBRE_BIN_DIR}...")
-    # O Windows possui o 'msiexec' nativo, que permite extrair o instalador sem instalar no sistema
-    comando = [
-        "msiexec",
-        "/a", str(msi_path),         # Modo administrativo (apenas extrai os arquivos)
-        "/qb",                       # Interface básica/silenciosa
-        f"TARGETDIR={CALIBRE_BIN_DIR}" # Pasta de destino interna do projeto
-    ]
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
     
     try:
-        subprocess.run(comando, check=True)
-        print("✅ Calibre extraído com sucesso dentro do projeto!")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Erro ao extrair o Calibre: {e}")
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req) as response, open(destino, 'wb') as out_file:
+            shutil.copyfileobj(response, out_file)
+        print(f"✅ Download concluído: {destino}")
+    except Exception as e:
+        print(f"❌ Erro ao baixar o arquivo: {e}")
+        if os.path.exists(destino):
+            os.remove(destino)
+        sys.exit(1)
+
+def extrair_tar(arquivo_origem, pasta_destino):
+    """Extrai arquivos .tar.gz ou .txz nativamente em qualquer SO."""
+    Path(pasta_destino).mkdir(parents=True, exist_ok=True)
+    print(f"📦 Extraindo {arquivo_origem}...")
+    
+    try:
+        with tarfile.open(arquivo_origem, "r:*") as tar:
+            if hasattr(tarfile, 'data_filter'):
+                tar.extractall(path=pasta_destino, filter='data')
+            else:
+                tar.extractall(path=pasta_destino)
+        print(f"✅ Extração concluída com sucesso.")
+    except Exception as e:
+        print(f"❌ Erro na extração do arquivo: {e}")
+        sys.exit(1)
     finally:
-        # Limpa o instalador pesado que foi baixado
-        if msi_path.exists():
-            os.remove(msi_path)
+        if os.path.exists(arquivo_origem):
+            os.remove(arquivo_origem)
+
+def setup_kcc():
+    print("\n🚀 Configurando KCC...")
+    destino_kcc = Path("app/integrations/kcc/bin")
+    
+    if destino_kcc.exists():
+        shutil.rmtree(destino_kcc)
+    
+    download_arquivo(KCC_URL, "kcc.tar.gz")
+    
+    pasta_pai = destino_kcc.parent
+    extrair_tar("kcc.tar.gz", pasta_pai)
+    
+    pasta_extraida = pasta_pai / "kcc-9.6.2"
+    if pasta_extraida.exists():
+        pasta_extraida.rename(destino_kcc)
+        print(f"✨ KCC organizado em: {destino_kcc}")
+    else:
+        print("⚠️ Atenção: Pasta extraída do KCC não encontrada no formato esperado.")
+
+def setup_calibre():
+    print(f"\n📚 Configurando Calibre ({sys.platform})...")
+    destino_calibre = Path("app/integrations/calibre/bin")
+    
+    if destino_calibre.exists():
+        shutil.rmtree(destino_calibre)
+        
+    download_arquivo(CALIBRE_URL, "calibre.txz")
+    extrair_tar("calibre.txz", destino_calibre)
+    print(f"✨ Calibre organizado em: {destino_calibre}")
 
 def main():
-    if sys.platform != "win32":
-        print("❌ Este script foi adaptado para Windows.")
-        return
+    # Verifica se o SO é suportado antes de começar
+    if not (sys.platform.startswith('linux') or sys.platform == 'win32'):
+        print(f"❌ Sistema {sys.platform} não suportado.")
+        sys.exit(1)
 
-    print("🚀 Iniciando o download...")
-    criar_pastas()
-    configurar_calibre_windows()
+    setup_kcc()
+    setup_calibre()
     
-    # Validação pós-download:
-    exe_final = BASE_DIR / "app" / "integrations" / "calibre" / "bin" / "calibre" / "ebook-convert.exe"
-    # Nota: Ajuste o caminho acima conforme a estrutura que o MSI criar no seu teste
-    
-    if exe_final.exists():
-        print(f"\n🎉 Sucesso! Calibre pronto em: {exe_final}")
-    else:
-        print("\n⚠️ O download terminou, mas o 'ebook-convert.exe' não foi encontrado no caminho esperado.")
-        print("Verifique a pasta 'app/integrations/calibre/bin/' e ajuste o adapter.py.")
+    print("\n🎉 Dependências instaladas e organizadas com sucesso!")
+
+if __name__ == "__main__":
+    main()
