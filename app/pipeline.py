@@ -5,28 +5,15 @@ from app.services.normalizer import normalize_epub
 from app.services.metadata import update_epub_metadata
 
 def process_file(path: str, kindle_mode: bool = False, title: str = None, author: str = None):
-    original_path = Path(path)
+    # 1. Converte (Calibre)
+    epub_path = convert_to_epub(Path(path))
     
-    if not original_path.exists():
-        print(f"❌ Erro: Arquivo de entrada não encontrado: {path}")
-        return
-
-    print(f"🚀 Iniciando processamento do arquivo: {original_path.name}")
-    
-    # Etapa 1: Conversão (Calibre Local)
-    epub_path = convert_to_epub(original_path)
-    
-    if not epub_path:
-        print("❌ Interrompendo pipeline: Falha na geração do EPUB intermediário.")
-        return
-
-    # Etapa 2: Normalização e Higienização de Código (HTML/CSS)
-    if kindle_mode:
+    # 2. Higieniza (Normalizador)
+    if kindle_mode and epub_path:
         epub_path = normalize_epub(epub_path)
-
-    # Etapa 3: Injeção de Metadados Tratados
-    if title or author:
+    
+    # 3. Personaliza (Metadados)
+    if (title or author) and epub_path:
         update_epub_metadata(epub_path, title=title, author=author)
-
-    print(f"🎉 Pipeline concluído com sucesso!")
-    print(f"📦 Arquivo pronto para o Kindle gerado em: {epub_path}")
+        
+    return str(epub_path) # Retorna o caminho final para a UI

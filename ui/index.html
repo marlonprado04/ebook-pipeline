@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebook Pipeline</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Ebook Pipeline</h1>
+            <p class="app-subtitle">Tratamento e conversão otimizada para Kindle</p>
+        </header>
+
+        <form id="pipelineForm" class="main-form">
+            <div class="form-section">
+                <label class="field-label">📁 Arquivo de Origem (PDF, MOBI)</label>
+                <div class="folder-picker-group">
+                    <input type="text" id="caminhoArquivo" placeholder="Caminho do arquivo..." required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="grid-2-col">
+                    <div class="field-wrapper">
+                        <label class="field-label" for="metaTitle">Título (Opcional)</label>
+                        <input type="text" id="metaTitle" placeholder="Ex: Meu Livro">
+                    </div>
+                    <div class="field-wrapper">
+                        <label class="field-label" for="metaAuthor">Autor (Opcional)</label>
+                        <input type="text" id="metaAuthor" placeholder="Ex: Autor">
+                    </div>
+                </div>
+            </div>
+
+            <div class="toggle-wrapper">
+                <div>
+                    <div class="field-label" style="color: var(--text-main)">Modo Kindle</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="kindleMode" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <button type="submit" id="btnDisparar" class="btn-primary">⚡ Iniciar Processamento</button>
+        </form>
+
+        <div id="statusSucesso" class="status-panel panel-success" style="display: none;"></div>
+        <div id="statusErro" class="status-panel panel-error" style="display: none;"></div>
+    </div>
+
+    <script type="text/javascript" src="/eel.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

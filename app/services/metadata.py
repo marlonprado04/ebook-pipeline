@@ -12,14 +12,14 @@ def update_epub_metadata(epub_path: str, title: str = None, author: str = None) 
     """
     path = Path(epub_path)
     if not path.exists():
-        print(f"❌ Erro no Editor de Metadados: Arquivo não encontrado ({path})")
+        print(f"Erro no Editor de Metadados: Arquivo não encontrado ({path})")
         return False
 
     # Se não foi passado metadado nenhum para alterar, pula o processo
     if not title and not author:
         return True
 
-    print(f"🏷️ Atualizando metadados internos de: {path.name}...")
+    print(f" Atualizando metadados internos de: {path.name}...")
     
     temp_dir = path.parent / f"_temp_meta_{path.stem}"
     output_epub = path.parent / f"meta_updated_{path.name}"
@@ -33,7 +33,7 @@ def update_epub_metadata(epub_path: str, title: str = None, author: str = None) 
         opf_file = next(temp_dir.rglob("*.opf"), None)
         
         if not opf_file:
-            print("   [Aviso] Arquivo de metadados (.opf) não foi encontrado dentro do EPUB.")
+            print("[Aviso] Arquivo de metadados (.opf) não foi encontrado dentro do EPUB.")
             return False
 
         # 3. Lê e modifica o arquivo .opf usando BeautifulSoup (com parser XML para manter a estrutura)
@@ -47,14 +47,14 @@ def update_epub_metadata(epub_path: str, title: str = None, author: str = None) 
             title_tag = soup.find('dc:title')
             if title_tag:
                 title_tag.string = title
-                print(f"   ↳ Título alterado para: '{title}'")
+                print(f"   -> Título alterado para: '{title}'")
 
         # Atualiza o Autor se foi fornecido
         if author:
             author_tag = soup.find('dc:creator')
             if author_tag:
                 author_tag.string = author
-                print(f"   ↳ Autor alterado para: '{author}'")
+                print(f"   -> Autor alterado para: '{author}'")
 
         # Grava as alterações de volta no arquivo .opf
         with open(opf_file, 'w', encoding='utf-8') as f:
@@ -67,11 +67,11 @@ def update_epub_metadata(epub_path: str, title: str = None, author: str = None) 
         path.unlink()
         output_epub.rename(path)
         
-        print(f"✅ Metadados injetados com sucesso!")
+        print(f"Metadados injetados com sucesso!")
         return True
 
     except Exception as e:
-        print(f"⚠️ Falha ao atualizar metadados: {e}")
+        print(f"Falha ao atualizar metadados: {e}")
         return False
         
     finally:
