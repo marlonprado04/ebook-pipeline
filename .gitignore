@@ -1,13 +1,29 @@
-# Arquivos pesados da pasta integrations
-*.txz
-*tar.gz
+# --- PYTHON PADRÃO ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.env
 
-# Arquivos da pasta de integração do calibre e kcc
+# --- ARQUIVOS TEMPORÁRIOS DO SISTEMA ---
+.DS_Store
+Thumbs.db
 
-integrations/calibre/*
-integrations/kcc/*
+# --- ESPECÍFICO DO PROJETO (INTEGRAÇÕES) ---
+# Ignorar instaladores temporários do Windows
+*.msi
 
-# Mantém arquivos gitkeep pra manter estrutura de pastas de integração
+# Ignorar os binários pesados (Calibre e KCC)
+# O Git vai trackear o 'adapter.py', mas vai ignorar os gigabytes de arquivos dentro de 'bin'
+app/integrations/calibre/bin/
+app/integrations/kcc/bin/
 
-!integrations/calibre/.gitkeep
-!integrations/kcc/.gitkeep
+# --- ARQUIVOS DE TESTE ---
+# Ignorar livros e mangás que você usar para testar localmente na raiz
+*.pdf
+*.epub
+*.mobi
+*.cbz
+*.zip
